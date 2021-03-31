@@ -1,0 +1,58 @@
+package main
+
+import (
+	"fmt"
+	"log"
+	"math"
+	"periph.io/x/periph/conn/i2c/i2creg"
+	"periph.io/x/periph/conn/physic"
+	"periph.io/x/periph/experimental/devices/ads1x15"
+	"periph.io/x/periph/host"
+)
+
+const (
+	adcRange              = 26400 // using a TeensyLC and ADS1115 gives you 80% of 4.096v (3.3v is 80%) so that makes 80% of 32768 (26400)
+	channel               = ads1x15.Channel3
+	inputVoltageInChannel = 3300 * physic.MilliVolt
+)
+
+func main() {
+	// Make sure periph is initialized.
+	if _, err := host.Init(); err != nil {
+		log.Fatal(err)
+	}
+
+	// Open default I²C bus.
+	bus, err := i2creg.Open("")
+	if err != nil {
+		log.Fatalf("failed to open I²C: %v", err)
+	}
+	defer bus.Close()
+
+	// Create a new ADS1115 ADC.
+	adc, err := ads1x15.NewADS1115(bus, &ads1x15.DefaultOpts)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// Obtain an analog pin from the ADC.
+	pin, err := adc.PinForChannel(channel, inputVoltageInChannel, 1*physic.Hertz, ads1x15.SaveEnergy)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer pin.Halt()
+
+	// Read values continuously from ADC.
+	fmt.Println("Continuous reading")
+	c := pin.ReadContinuous()
+
+	for reading := range c {
+		voltage := float32(reading.Raw) / (adcRange) * 3.3
+		Rt := 10 * voltage / (3.3 - voltage)
+		tempK := 1 / (1/(273.15+25) + math.Log(float64(Rt/10))/3950.0) // calculate temperature in Kelvin
+		tempC := tempK - 273.15                                        // calculate temperature (Celsius)
+		fmt.Printf("Temp in Kelvin: %0.2f\n", tempK)
+		fmt.Printf("Temp in Celsius: %0.2f\n", tempC)
+		fmt.Println(reading)
+	}
+}
