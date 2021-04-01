@@ -1,5 +1,5 @@
-module github.com/antavelis/i2c/ads1115
+module github.com/ntavelis/ads1115
 
 go 1.16
 
-require periph.io/x/periph v3.6.4+incompatible
+require periph.io/x/periph v3.6.7+incompatible // indirect
