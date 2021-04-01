@@ -12,8 +12,8 @@ This is an example on how to use an ADS1115, and a thermistor to create a high a
 
 ## Golang code
 
-The code opens a go channel and reads continuously the value from the adc channel (0 - 26400) at the frequency the pin has been configured.
-Then calculates and displays the Temperature in Celsius and in Kelvin.
+The code opens a go channel and reads continuously the value from the adc channel, with range 0 - 26400, at the frequency the pin has been configured.
+Then calculates and displays the temperature in Celsius and in Kelvin.
 
 To run it:
 
