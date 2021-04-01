@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	adcRange              = 26400 // using a TeensyLC and ADS1115 gives you 80% of 4.096v (3.3v is 80%) so that makes 80% of 32768 (26400)
+	adcRange              = 26400 // ADS1115 gives you 80% of 4.096v (3.3v is 80%), so that makes 26400 the 80% of 32768
 	channel               = ads1x15.Channel3
 	inputVoltageInChannel = 3300 * physic.MilliVolt
 )
