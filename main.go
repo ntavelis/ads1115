@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	adcRange              = 26400 // ADS1115 gives you 80% of 4.096v (3.3v is 80%), so that makes 26400 the 80% of 32768
+	adcRange              = 26400 // ADS1115 gives you 32768 steps with 4.096v, with 3.3v which is the 80% of 4.096v we get 26400 steps
 	channel               = ads1x15.Channel3
 	inputVoltageInChannel = 3300 * physic.MilliVolt
 )
